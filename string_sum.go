@@ -2,6 +2,9 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -10,6 +13,8 @@ var (
 	errorEmptyInput = errors.New("input is empty")
 	// Use when the expression has number of operands not equal to two
 	errorNotTwoOperands = errors.New("expecting two operands, but received more or less")
+	// Use when the expression contains inappropriate symbols
+	errorContainsInvalidSymbols = errors.New("expected only numerics, +, - and whitespases, got other symbols")
 )
 
 // Implement a function that computes the sum of two int numbers written as a string
@@ -23,5 +28,32 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	if input == "" || input == " " {
+		return "", fmt.Errorf("error: %w", errorEmptyInput)
+	}
+
+	//remove all unnessesary whitespaces
+	replacerWhitespaces := strings.NewReplacer(" ", "")
+	noWhitespaces := replacerWhitespaces.Replace(input)
+	//add a whitespace before every sign
+	replacerSings := strings.NewReplacer("+", " +", "-", " -")
+	exprArgsStr := replacerSings.Replace(noWhitespaces)
+
+	exprArgs := strings.Fields(exprArgsStr)
+
+	var exprResult = 0
+
+	for _, arg := range exprArgs {
+		if value, error_ := strconv.Atoi(arg); error_ != nil {
+			return "", fmt.Errorf("error: %w", errorContainsInvalidSymbols)
+		} else {
+			exprResult += value
+		}
+	}
+
+	if len(exprArgs) != 2 {
+		return "", fmt.Errorf("error: %w", errorNotTwoOperands)
+	}
+
+	return strconv.Itoa(exprResult), nil
 }
