@@ -45,7 +45,13 @@ func StringSum(input string) (output string, err error) {
 
 	for _, arg := range exprArgs {
 		if value, error_ := strconv.Atoi(arg); error_ != nil {
-			return "", fmt.Errorf("error: %w", errorContainsInvalidSymbols)
+			return "", fmt.Errorf(
+				"error: %w",
+				&strconv.NumError{
+					Func: "Atoi",
+					Num:  arg,
+					Err:  errorContainsInvalidSymbols},
+			)
 		} else {
 			exprResult += value
 		}
