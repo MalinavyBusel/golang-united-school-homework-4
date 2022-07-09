@@ -28,8 +28,9 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
+	const errMess = "error: %w"
 	if input == "" || input == " " {
-		return "", fmt.Errorf("error: %w", errorEmptyInput)
+		return "", fmt.Errorf(errMess, errorEmptyInput)
 	}
 
 	//remove all unnessesary whitespaces
@@ -46,7 +47,7 @@ func StringSum(input string) (output string, err error) {
 	for _, arg := range exprArgs {
 		if value, error_ := strconv.Atoi(arg); error_ != nil {
 			return "", fmt.Errorf(
-				"error: %w",
+				errMess,
 				&strconv.NumError{
 					Func: "Atoi",
 					Num:  arg,
@@ -58,7 +59,7 @@ func StringSum(input string) (output string, err error) {
 	}
 
 	if len(exprArgs) != 2 {
-		return "", fmt.Errorf("error: %w", errorNotTwoOperands)
+		return "", fmt.Errorf(errMess, errorNotTwoOperands)
 	}
 
 	return strconv.Itoa(exprResult), nil
